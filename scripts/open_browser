@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+if ! command -v osascript >/dev/null 2>&1; then
+    open 'http://localhost:5174'
+else
+    readarray -t open_urls < <(osascript -e \
+        'if application "Google Chrome" is running then
+            tell application "Google Chrome" to get URL of every tab of every window
+        end if' | awk -F',' '{ for( i=1; i<=NF; i++ ) print $i }' | sort -u);
+
+    app_url='http://localhost:5174/.*'
+
+    if echo "${open_urls[@]}" | grep -qe "$app_url"; then
+        echo "Already open"
+    else
+        open 'http://localhost:5174'
+    fi
+fi
+

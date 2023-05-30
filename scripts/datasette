@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+SQLITE_DB="$HOME/Library/Mobile Documents/com~apple~CloudDocs/botplot/sqlite.db"
+
+DIR="$(dirname "$SQLITE_DB")"
+FILE="$(basename "$SQLITE_DB")"
+
+docker run -p 8001:8001 -v "$DIR:/mnt" \
+    datasetteproject/datasette \
+    datasette -p 8001 -h 0.0.0.0 "/mnt/$FILE"

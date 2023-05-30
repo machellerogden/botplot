@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+SQLITE_DB="$HOME/Library/Mobile Documents/com~apple~CloudDocs/botplot/sqlite.db"
+sqlite3 "$SQLITE_DB"

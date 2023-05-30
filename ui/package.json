@@ -1,0 +1,30 @@
+{
+  "name": "ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^1.0.2",
+    "autoprefixer": "^10.4.11",
+    "postcss": "^8.4.24",
+    "svelte": "^3.49.0",
+    "svelte-range-slider-pips": "^2.1.1",
+    "tailwindcss": "^3.1.8",
+    "vite": "^3.1.0"
+  },
+  "dependencies": {
+    "@macfja/svelte-persistent-store": "^2.2.1",
+    "@picovoice/porcupine-web": "^2.2.0",
+    "@picovoice/web-voice-processor": "^4.0.6",
+    "history": "^5.3.0",
+    "mermaid": "^10.2.3",
+    "svelte-markdown": "^0.2.3",
+    "svelte-navigator": "^3.2.2",
+    "xstate": "^4.38.0"
+  }
+}

@@ -1,0 +1,33 @@
+version: '3'
+services:
+  mimic3:
+    image: 'mycroftai/mimic3'
+    ports:
+      - '59125:59125'
+    volumes:
+      - '${HOME}/.local/share/mycroft/mimic3:/home/mimic3/.local/share/mycroft/mimic3'
+    restart: always
+  node_app:
+    build: .
+    ports:
+      - '8889:8889'
+    volumes:
+      - '.:/usr/src/app'
+    restart: always
+    environment:
+      - PORT
+      - SQLITE_DB
+      - PINECONE_INDEX
+      - OPENAI_API_KEY
+      - OPENAI_API_ORG
+      - PINECONE_API_KEY
+      - PINECONE_ENVIRONMENT
+      - PICOVOICE_ACCESS_KEY
+      - SERPAPI_API_KEY
+      - SERPER_API_KEY
+      - GOOGLE_API_KEY
+      - GOOGLE_CSE_ID
+      - WOLFRAM_ALPHA_APPID
+      - RESEMBLE_API_KEY
+    depends_on:
+      - mimic3

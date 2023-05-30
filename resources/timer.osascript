@@ -1,0 +1,1 @@
+tell application "System Events" to key code 119 using {control down, shift down, option down} end tell

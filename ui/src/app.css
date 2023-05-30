@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  :root {
+
+    /* tip, use https://uicolors.app/create - there are dozens of tailwind color utils but this is the better than most */
+
+    --white-color: 255 255 255;
+    --black-color: 37 40 42;
+
+    --primary-color:     144 191 35;
+    --primary-color-50:  248 252 233;
+    --primary-color-100: 239 248 207;
+    --primary-color-200: 223 242 164;
+    --primary-color-300: 199 232 110;
+    --primary-color-400: 170 215 55;
+    --primary-color-500: 144 191 35;
+    --primary-color-600: 111 152 24;
+    --primary-color-700: 85 116 23;
+    --primary-color-800: 69 92 24;
+    --primary-color-900: 59 78 25;
+    --primary-color-950: 29 43 8;
+
+    --secondary-color:     38 144 209;
+    --secondary-color-50:  242 248 253;
+    --secondary-color-100: 230 240 251;
+    --secondary-color-200: 193 224 246;
+    --secondary-color-300: 139 199 238;
+    --secondary-color-400: 87 175 229;
+    --secondary-color-500: 38 144 209;
+    --secondary-color-600: 23 114 178;
+    --secondary-color-700: 20 91 144;
+    --secondary-color-800: 21 78 119;
+    --secondary-color-900: 23 65 99;
+    --secondary-color-950: 15 42 66;
+
+    --warning-color:     255 170 43;
+    --warning-color-100: 255 243 223;
+    --warning-color-200: 255 234 202;
+    --warning-color-300: 255 221 170;
+    --warning-color-400: 255 196 107;
+    --warning-color-500: 255 170 43;
+    --warning-color-600: 230 153 39;
+    --warning-color-700: 255 93 0;
+    --warning-color-800: 115 77 19;
+    --warning-color-900: 77 51 13;
+
+    --gray-color:     166 166 166;
+    --gray-color-100: 250 250 250;
+    --gray-color-200: 246 246 246;
+    --gray-color-300: 217 217 217;
+    --gray-color-400: 192 192 192;
+    --gray-color-500: 166 166 166;
+    --gray-color-600: 140 140 140;
+    --gray-color-700: 115 115 115;
+    --gray-color-800: 89 89 89;
+    --gray-color-900: 64 64 64;
+
+    --info-color:     38 144 209;
+    --info-color-50:  242 248 253;
+    --info-color-100: 227 239 251;
+    --info-color-200: 193 224 246;
+    --info-color-300: 139 199 238;
+    --info-color-400: 87 175 229;
+    --info-color-500: 38 144 209;
+    --info-color-600: 23 114 178;
+    --info-color-700: 20 91 144;
+    --info-color-800: 21 78 119;
+    --info-color-900: 23 65 99;
+    --info-color-950: 15 42 66;
+
+    --success-color:     144 191 35;
+    --success-color-50:  248 252 233;
+    --success-color-100: 239 248 207;
+    --success-color-200: 223 242 164;
+    --success-color-300: 199 232 110;
+    --success-color-400: 170 215 55;
+    --success-color-500: 144 191 35;
+    --success-color-600: 111 152 24;
+    --success-color-700: 85 116 23;
+    --success-color-800: 69 92 24;
+    --success-color-900: 59 78 25;
+    --success-color-950: 29 43 8;
+
+    --danger-color:     194 24 7;
+    --danger-color-100: 255 232 230;
+    --danger-color-200: 250 118 104;
+    --danger-color-300: 248 73 55;
+    --danger-color-400: 243 30 9;
+    --danger-color-500: 194 24 7;
+    --danger-color-600: 145 18 5;
+    --danger-color-700: 96 12 3;
+    --danger-color-800: 46 6 2;
+    --danger-color-900: 000000;
+
+  }
+}
+
+.rangeSlider {
+    margin-top: 8px;
+    height: 4px !important;
+}
+.rangeSlider > .rangeHandle {
+    height: 12px !important;
+    width: 12px !important;
+    margin-top: -2px !important;
+}
+.rangeSlider .rangeHandle .rangeFloat {
+    opacity: 1;
+    top: -2px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    height: 14px;
+    padding: 0 4px;
+}

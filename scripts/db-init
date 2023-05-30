@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+[ -n "$SQLITE_DB" ] || echo "SQLITE_DB must be set" && exit 1
+
+if [ -f "${SQLITE_DB}" ]; then
+    mv "${SQLITE_DB}" "${SQLITE_DB}.$(date +%s).bak" || echo "Failed to backup ${SQLITE_DB}" && exit 1
+    rm "${SQLITE_DB}" &2>/dev/null
+    rm "${SQLITE_DB}-wal" &2>/dev/null
+    rm "${SQLITE_DB}-shm" &2>/dev/null
+fi
+
+cat ./scripts/init.sql | sqlite3 "${SQLITE_DB}"
