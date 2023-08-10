@@ -1,7 +1,7 @@
 import { persist, createLocalStorage } from '@macfja/svelte-persistent-store';
 import { writable, derived } from 'svelte/store';
 import { audioContext } from './lib/audio.js';
-import { getFunctions, getFunctionSets, getCompletionConfigs } from './api.js';
+import { getFunctions, getWorkspaces, newWorkspace, getFunctionSets, getCompletionConfigs } from './api.js';
 import { mimicVoices } from './constants.js';
 import Ajv from 'ajv';
 

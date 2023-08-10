@@ -3,3 +3,4 @@ node_modules
 public/*
 !public/.gitkeep
 tmp
+output.wav

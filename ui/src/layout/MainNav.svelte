@@ -2,6 +2,8 @@
     import { Link } from 'svelte-navigator';
 
     function getNavLinkProps({ location, href, isPartiallyCurrent, isCurrent }) {
+        console.log('href', href);
+        console.log('location', location);
         return isPartiallyCurrent ? {
             class: "inline-flex py-3 px-2 text-white bg-secondary-600"
         } : {

@@ -5,7 +5,22 @@
 
     import { log, event, showChatSettings, functions, voice } from '../stores.js';
     import { chatModelOptions, completionModelOptions, chatMaxTokensOptions, chatNOptions, mimicVoices } from '../constants.js';
-    import { transcribe, insertMessage, postChatCompletion, getChat, withSSML, patchChat, googleSynth, mimicSynth, postFunctionCall } from '../api.js';
+    import {
+        getChat,
+        googleSynth,
+        insertMessage,
+        mimicSynth,
+        patchChat,
+        getProject,
+        getProjects,
+        newWorkspace,
+        getWorkspaces,
+        patchWorkspace,
+        postChatCompletion,
+        postFunctionCall,
+        transcribe,
+        withSSML,
+    } from '../api.js';
 
     import AudioMonitor from '../components/AudioMonitor.svelte';
     import AudioRecorder from '../components/AudioRecorder.svelte';
@@ -22,14 +37,20 @@
     import { Link, useNavigate } from 'svelte-navigator';
     const navigate = useNavigate();
 
-    export let id;
-    export let project_id;
+    export let id = 'default';
+    export let project_id = 'default';
+    export let workspace_id = 'default';
 
     const getRangeColor = (value, base = 1, sat = 100, light = 30) => `hsl(${Math.round((value / base) * 180)}, ${sat}%, ${light}%)`;
     const getInvertedRangeColor = (value, base = 1, sat = 100, light = 30) => `hsl(${(100 - Math.round((value / base) * 180))}, ${sat}%, ${light}%)`;
 
     // component state
     let apiError;
+
+    let projects = [];
+    let project = {};
+    let workspaces = [];
+    let workspace = {};
 
     let chat;
     let chatsNode;
@@ -99,6 +120,68 @@
     }
 
     $: chat?.id && resetChatDetails();
+
+    /**
+      * load the project
+      */
+    async function loadProject(project_id) {
+        if (project_id) {
+            console.log(`getting project id:`, project_id);
+            try {
+                project = await getProject(project_id) ?? {};
+                console.log(`project loaded`, project);
+            } catch (error) {
+                project = {};
+                console.error(`error loading project`, error);
+            }
+        } else {
+            console.log('no project id');
+        }
+    }
+
+    /**
+      * load the workspace
+      */
+    async function loadWorkspace(workspace_id) {
+        if (workspace_id) {
+            console.log(`getting workspace id:`, workspace_id);
+            try {
+                workspace = await getWorkspace(workspace_id) ?? {};
+                console.log(`workspace loaded`, workspace);
+            } catch (error) {
+                workspace = {};
+                console.error(`error loading workspace`, error);
+            }
+        } else {
+            console.log('no workspace id');
+        }
+    }
+
+    /**
+     * load the workspaces
+     */
+    async function loadWorkspaces() {
+        workspaces = await getWorkspaces();
+    }
+
+    /**
+     * load the projects
+     */
+    async function loadProjects() {
+        projects = await getProjects();
+    }
+
+    onMount(async () => {
+        const results = await Promise.allSettled([
+            loadWorkspaces(),
+            loadProjects()
+        ]);
+        for (const { status, reason } of results) {
+            if (status === 'rejected') console.error(reason);
+        }
+    });
+
+    $: loadProject(project_id);
 
     async function onWakeWordDetection(event) {
         const word = event?.detail?.label;
@@ -274,7 +357,7 @@
     <svelte:fragment slot="top-strip">
         <div class="flex w-full place-content-between pt-0.5">
             <label for="project-id" class="text-xxs uppercase font-mono text-white me-1">
-                project id:
+                project:
             </label>
             <select
                 id="project-id"
@@ -283,11 +366,37 @@
                 bind:value={project_id}
                 on:change={async event => {
                     // TODO:
-                    // await patchUser(user.id, { last_project_id: event.target.value });
                 }}
             >
-                <option value="default">default</option>
+                {#each projects as option (option.id)}
+                    <option selected={option.id === project.id} value={option.id}>{option.label}</option>
+                {/each}
             </select>
+
+            <div class="flex">
+                <button class="text-secondary-200 hover:text-white ps-1 pe-1 workspace-button">
+                    <!-- folder -->
+                    <svg fill="currentColor" class="icon folder -mt-1 w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g><path d="M21.5 7.5H9.94c-.65 0-1.218-.42-1.423-1.03l-.09-.27c-.35-1.03-1.3-1.71-2.38-1.71H2.48c-1.378 0-2.5 1.12-2.5 2.5v12c0 1.37 1.122 2.5 2.5 2.5h19c1.37 0 2.5-1.13 2.5-2.5v-9c0-1.38-1.13-2.5-2.5-2.5Z"/><path d="M20.5 2.5H6.05c-.28 0-.5.22-.5.5 0 .27.22.5.5.5 1.508 0 2.84.96 3.32 2.392l.08.26c.06.2.25.34.47.34l11.55-.01c.26 0 .54.04.87.12 .04.01.08.01.12.01 .1 0 .21-.04.3-.11 .12-.1.19-.25.19-.4V4.95c0-1.38-1.13-2.5-2.5-2.5Z"/></g></svg>
+                    <!-- folder, add -->
+                    <svg fill="currentColor" class="icon folder-add w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g><path d="M5.05 1c1.5 0 2.843.962 3.32 2.39l.08.26c.06.2.25.34.47.34l11.55-.01c.26 0 .54.04.87.12 .04.01.08.01.12.01 .1 0 .21-.04.3-.11 .12-.1.19-.25.19-.4V2.458c0-1.378-1.13-2.5-2.5-2.5H5c-.28 0-.5.224-.5.5s.22.5.5.5Z"/><path d="M20.5 5H8.94c-.65 0-1.22-.42-1.43-1.03l-.09-.27C7.07 2.67 6.12 1.99 5.04 1.99H2.481c-1.379 0-2.5 1.12-2.5 2.5v12c0 1.37 1.121 2.5 2.5 2.5h2c.27 0 .5-.23.5-.5 0-3.59 2.91-6.5 6.5-6.5 3.58 0 6.5 2.91 6.5 6.5 0 .27.22.5.5.5h2c1.37 0 2.5-1.13 2.5-2.5v-9c0-1.38-1.13-2.5-2.5-2.5Z"/><path d="M11.5 13C8.468 13 6 15.46 6 18.5c0 3.03 2.468 5.5 5.5 5.5s5.5-2.47 5.5-5.5c0-3.04-2.468-5.5-5.5-5.5Zm2 6H12v1.5c0 .27-.23.5-.5.5 -.28 0-.5-.23-.5-.5V19H9.5c-.28 0-.5-.23-.5-.5 0-.28.22-.5.5-.5H11v-1.5c0-.28.22-.5.5-.5 .27 0 .5.22.5.5V18h1.5c.27 0 .5.22.5.5 0 .27-.23.5-.5.5Z"/></g></svg>
+                </button>
+                <select
+                    id="location-ref"
+                    type="text"
+                    on:keyup|stopPropagation
+                    class="outline-0 rounded-lg uppercase text-secondary-200 bg-secondary-800 hover:bg-secondary-900 p-[3px] mt-[-2px] ml-[-2px] text-xxs w-full"
+                    on:change={async event => {
+                        if (project.id) {
+                            await patchWorkspace(event.target.value, { project_id: project.id });
+                        }
+                    }}
+                    bind:value={workspace_id}
+                >
+                    {#each workspaces as option}
+                        <option selected={option.id === workspace_id} value={option.id}>{option.label} {option.location_ref}</option>
+                    {/each}
+                </select>
+            </div>
 
             <div class="grow"></div>
 
@@ -304,7 +413,6 @@
         <MainNav>
             <svelte:fragment slot="extras">
                 {#if chat}
-
                     <div class="w-full mx-2 h-[54px] z-50">
                         <AudioMonitor
                             on:silence={onSilence}
@@ -327,14 +435,13 @@
                         </select>
                     </div>
 
-                    <div class="mt-[17px] mr-2">
+                    <div class="mt-[18px] mr-4">
                         <AudioRecorder
                             bind:this={audioRecorderNode}
                             on:start={onRecorderStart}
                             on:stop={onRecorderStop}
                         />
                     </div>
-
                     <div class="mr-6 grid grid-cols-2 grid-flow-row-dense gap-y-1 place-content-center">
                         <div>
                             <Toggle bind:value={autoTTS} />
@@ -344,16 +451,14 @@
                         </div>
                         <div>
                             <WakeWord
-                                on:log={e => console.log(e)}
                                 on:detection={onWakeWordDetection}
-                                record={listenForWakeWord}
+                                listen={listenForWakeWord}
                             />
                         </div>
                         <div class="whitespace-nowrap text-secondary-200 text-xxs font-light text-left">
                             wake word
                         </div>
                     </div>
-
                 {/if}
             </svelte:fragment>
         </MainNav>
@@ -771,3 +876,18 @@
     </div>
 
 </DefaultLayout>
+
+<style>
+    .workspace-button svg.folder {
+        display: block;
+    }
+    .workspace-button svg.folder-add {
+        display: none;
+    }
+    .workspace-button:hover svg.folder {
+        display: none;
+    }
+    .workspace-button:hover svg.folder-add {
+        display: block;
+    }
+</style>

@@ -37,8 +37,17 @@
     const updateScrollPosition = debounce(() => containerNode.lastElementChild.scrollIntoView(), 100);
 
     onMount(async () => {
-        containerNode.addEventListener('DOMNodeInserted', updateScrollPosition, false);
-        return () => containerNode.removeEventListener('DOMNodeInserted', updateScrollPosition, false);
+        //containerNode.addEventListener('DOMNodeInserted', updateScrollPosition, false);
+        //return () => containerNode.removeEventListener('DOMNodeInserted', updateScrollPosition, false);
+        const observer = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                if (mutation.type == 'childList') {
+                        updateScrollPosition();
+                }
+            });
+        });
+        observer.observe(containerNode, { childList: true });
+        return () => observer.disconnect();
     });
 
     const toNewChat = async message => {

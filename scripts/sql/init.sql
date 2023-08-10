@@ -39,7 +39,7 @@ create table if not exists workspaces (
     as_of timestamp default current_timestamp
 );
 
-insert or ignore into workspaces (id, label, description, location_type, location_ref) values ('default', 'default', 'default', 'local', './temp-workspace');
+insert or ignore into workspaces (id, label, description, location_type, location_ref) values ('default', 'default', 'default', 'local', './tmp');
 
 /*
  * bots
@@ -97,6 +97,7 @@ insert or ignore into messages (
 create table if not exists chats (
     id text primary key,
     message_id text,
+    workspace_id text,
     label text,
     model text not null,
     max_tokens integer,
@@ -112,9 +113,9 @@ create table if not exists chats (
 );
 
 insert or ignore into chats (
-    id, message_id, label, model, max_tokens, temperature, top_p, n, frequency_penalty, presence_penalty
+    id, message_id, workspace_id, label, model, max_tokens, temperature, top_p, n, frequency_penalty, presence_penalty
 ) values (
-    'default', 'default', 'default', 'gpt-4', 1000, 0.3, 1, 1, 0.3, 0.15
+    'default', 'default', 'default', 'default', 'gpt-4', 1000, 0.3, 1, 1, 0.3, 0.15
 );
 
 create table if not exists completion_configs (
@@ -170,6 +171,7 @@ create table if not exists bot_chats (
     id text primary key,
     bot_id text,
     message_id text,
+    workspace_id text,
     label text,
     prompt_tokens integer default 0,
     completion_tokens integer default 0,
@@ -178,20 +180,21 @@ create table if not exists bot_chats (
 );
 
 insert or ignore into bot_chats (
-    id, bot_id, message_id, label
+    id, bot_id, message_id, workspace_id, label
 ) values (
-    'default', 'default', 'default', 'default'
+    'default', 'default', 'default', 'default', 'default'
 );
 
 insert or ignore into functions (name, description, parameters)
 values
-    ('set_chat_label',      'Set the label of the current chat',             '{"type":"object","properties":{"label":{"type":"string","description":"A clever descriptive label of the current chat, e.g. Mysterious Penguin Story"}},"required":["label"]}'),
-    ('set_timer',           'Sets a timer with given minutes',               '{"type":"object","properties":{"minutes":{"type":"number","description":"number of minutes to set on timer"}},"required":["minutes"]}'),
-    ('search_web',          'Search the internet',                           '{"type":"object","properties":{"q":{"type":"string","description":"Search query"}},"required":["q"]}'),
-    ('fetch_webpage',       'Fetch text content of a url',                   '{"type":"object","properties":{"url":{"type":"string","description":"URL to fetch"}},"required":["url"]}'),
-    ('extract_main_content','Extract the main content from given text',      '{"type":"object","properties":{"text":{"type":"string","description":"Subject text from which to extract main content"}},"required":["text"]}'),
-    ('shell_command',       'Executes a bash shell command on Mac OS',       '{"type":"object","properties":{"command":{"type":"string","description":"Command to run"}},"required":["command"]}'),
-    ('mkdir',               'Recursivey make a new directory on disk',       '{"type":"object","properties":{"dir_path":{"type":"string","description":"Directory path to create"}},"required":["dir_path"]}'),
-    ('read_file',           'Read file from disk',                           '{"type":"object","properties":{"file_path":{"type":"string","description":"File path to read"}},"required":["file_path"]}'),
-    ('write_file',          'Write file to disk',                            '{"type":"object","properties":{"file_path":{"type":"string","description":"File path to write to"},"text":{"type":"string","description":"Text to write to file"}},"required":["file_path","text"]}'),
-    ('copy_to_clipboard',   'Copy text to system clipboard',                 '{"type":"object","properties":{"text":{"type":"string","description":"Text to copy"}},"required":["file_path","text"]}');
+    ('vkxcK-lEsXPq-a-Dm5AZI', 'set_chat_label',      'Set the label of the current chat',             '{"type":"object","properties":{"label":{"type":"string","description":"A clever descriptive label of the current chat, e.g. Mysterious Penguin Story"}},"required":["label"]}'),
+    ('hCTmB3tw6y3h9_SBBqaC3', 'set_timer',           'Sets a timer with given minutes',               '{"type":"object","properties":{"minutes":{"type":"number","description":"number of minutes to set on timer"}},"required":["minutes"]}'),
+    ('NnP4M9xMUWaiNq-5Bm6DI', 'search_web',          'Search the internet',                           '{"type":"object","properties":{"q":{"type":"string","description":"Search query"}},"required":["q"]}'),
+    ('U8gioshhHaTZN2GUyJffH', 'fetch_webpage',       'Fetch text content of a url',                   '{"type":"object","properties":{"url":{"type":"string","description":"URL to fetch"}},"required":["url"]}'),
+    ('-ANMVEU6xiXGTQfci4U_Q', 'extract_main_content','Extract the main content from given text',      '{"type":"object","properties":{"text":{"type":"string","description":"Subject text from which to extract main content"}},"required":["text"]}'),
+    ('c3pOKspvXyEvP6GCExW6y', 'shell_command',       'Executes a bash shell command on Mac OS',       '{"type":"object","properties":{"command":{"type":"string","description":"Command to run"}},"required":["command"]}'),
+    ('lhlLHrbUWuOZkmGfYo8kJ', 'mkdir',               'Recursivey make a new directory on disk',       '{"type":"object","properties":{"dir_path":{"type":"string","description":"Directory path to create"}},"required":["dir_path"]}'),
+    ('_WurUw5ZD5ekBpU3bG7dc', 'read_file',           'Read file from disk',                           '{"type":"object","properties":{"file_path":{"type":"string","description":"File path to read"}},"required":["file_path"]}'),
+    ('Da9fOsg2MKNlmyugm05Rd', 'write_file',          'Write file to disk',                            '{"type":"object","properties":{"file_path":{"type":"string","description":"File path to write to"},"text":{"type":"string","description":"Text to write to file"}},"required":["file_path","text"]}'),
+    ('f2GPO3wwlBU_kYYpBbX-G', 'copy_to_clipboard',   'Copy text to system clipboard',                 '{"type":"object","properties":{"text":{"type":"string","description":"Text to copy"}},"required":["file_path","text"]}'),
+    ('dHH70vSu-heuyOKE_m2tt', 'remember',            'Remember something you may have forgotten',     '{"type":"object","properties":{"subject":{"type":"string","description":"The subject of your quandry"}},"required":["subject"]}');

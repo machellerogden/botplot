@@ -7,18 +7,16 @@
     import { keywordModels, porcupineModel } from '../lib/picovoice.js';
     import Toggle from './Toggle.svelte';
 
-    export let record = false;
+    export let listen = false;
 
     const dispatch = createEventDispatcher();
 
     let porcupine;
-    let detection;
-
-    async function detectionCallback(d) {
-        detection = null;
-        await tick();
-        detection = d ?? {};
-        console.log(`keyword detected at ${(new Date()).toLocaleTimeString()}: ${detection.label} (index = ${detection.index})`);
+    async function detectionCallback(detection) {
+        if (detection) {
+            dispatch('detection', detection);
+            console.log(`keyword detected at ${(new Date()).toLocaleTimeString()}: ${detection.label} (index = ${detection.index})`);
+        }
     }
 
     export async function stop() {
@@ -26,13 +24,13 @@
         await WebVoiceProcessor.unsubscribe(porcupine);
         await porcupine.terminate();
         console.log(`WebVoiceProcessor unsubscribed`);
-        record = false;
+        listen = false;
     }
 
     export async function start() {
         if (WebVoiceProcessor.isRecording) return;
 
-        const accessKey = import.meta.env.PICOVOICE_ACCESS_KEY;
+        const accessKey = __PICOVOICE_ACCESS_KEY__;
 
         console.log(`Porcupine loading. Please wait...`);
 
@@ -48,21 +46,17 @@
             console.log(`WebVoiceProcessor initializing. Microphone permissions requested ...`);
 
             await WebVoiceProcessor.subscribe(porcupine);
-            record = true;
+            listen = true;
 
             console.log(`WebVoiceProcessor ready`);
 
         } catch (error) {
-            console.log(`error starting porcupine worker ${error.stack}`);
+            console.log(`error starting porcupine worker`, error);
         }
     }
 
-    $: {
-        if (detection) dispatch('detection', detection);
-    };
-
-    $: { (record ? start : stop)(); };
+    $: { (listen ? start : stop)(); };
 
 </script>
 
-<Toggle bind:value={record} ping={true} />
+<Toggle bind:value={listen} ping={true} />

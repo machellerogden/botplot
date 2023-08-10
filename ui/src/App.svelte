@@ -16,17 +16,17 @@
 <Router primary={false} {basepath} {url} {history}>
     <Route path="" component={Welcome} />
     <Route path="bots" component={BotStudio} />
-    <Route path="bot/*">
+    <Route path="bot/*" let:params>
         <Route path=":bot_id/chat/:chat_id" let:params>
-            <BotStudio id={params.bot_id} chat_id={params.chat_id} />
+            <BotStudio bot_id={params.bot_id} chat_id={params.chat_id} />
         </Route>
         <Route path=":bot_id" let:params>
-            <BotStudio id={params.bot_id} />
+            <BotStudio bot_id={params.bot_id} />
         </Route>
     </Route>
     <Route path="chats" component={Chat} />
-    <Route path="chat/:id" let:params>
-        <Chat id={params.id} />
+    <Route path="chat/:chat_id" let:params>
+        <Chat id={params.chat_id} />
     </Route>
     <Route path="user" component={Settings} />
 </Router>
