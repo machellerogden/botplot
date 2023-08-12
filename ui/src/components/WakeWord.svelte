@@ -12,6 +12,7 @@
     const dispatch = createEventDispatcher();
 
     let porcupine;
+
     async function detectionCallback(detection) {
         if (detection) {
             dispatch('detection', detection);
@@ -55,7 +56,7 @@
         }
     }
 
-    $: { (listen ? start : stop)(); };
+    $: { (listen && __PICOVOICE_ACCESS_KEY__ ? start : stop)(); };
 
 </script>
 

@@ -48,11 +48,8 @@
     "build": "npm run --prefix ui build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./lib/server.js",
-    "docker-build": "docker compose build",
-    "docker-start": "docker compose up -d",
-    "docker-mimic": "docker compose up -d mimic3",
     "ui": "npm run --prefix ui dev",
-    "dev": "op run --env-file .env -- concurrently \"npm run start\" \"npm run ui\" \"./scripts/open_browser\""
+    "dev": "concurrently \"npm run start\" \"npm run ui\" \"./scripts/open_browser\""
   },
   "keywords": [
       "ai",

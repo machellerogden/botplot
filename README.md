@@ -7,7 +7,7 @@
 ## Install
 
 ```sh
-npm install
+make install
 ```
 
 ## Configure
@@ -17,25 +17,33 @@ npm install
 ## Develop
 
 ```sh
-npm run dev
+make dev
+```
+...or...
+
+```sh
+# first
+make start
+# then, in new terminal
+make ui
 ```
 
 ## Build
 
 ```sh
-npm run build
+make build
 ```
 
 ## Start
 
 ```sh
-npm run start
+make start
 ```
 
 ## Docker
 
 ```sh
-npm run docker-build
-npm run docker-start
-npm run docker-mimic
+make docker-build
+make docker-up
+make docker-mimic
 ```

@@ -5,29 +5,33 @@ services:
     ports:
       - '59125:59125'
     volumes:
-      - '${HOME}/.local/share/mycroft/mimic3:/home/mimic3/.local/share/mycroft/mimic3'
+      - type: bind
+        source: ~/.local/share/mycroft/mimic3
+        target: /home/mimic3/.local/share/mycroft/mimic3
     restart: always
-  node_app:
-    build: .
+  node-app:
+    build:
+      context: .
+      args:
+        - 'BASEURL=http://localhost:8889'
+        - PICOVOICE_ACCESS_KEY # todo, done to this
     ports:
-      - '8889:8889'
+      - '${PORT}:8889'
     volumes:
-      - '.:/usr/src/app'
+      - type: bind
+        source: ~/Library/Mobile Documents/com~apple~CloudDocs/botplot
+        target: /usr/src/data
     restart: always
     environment:
       - PORT
-      - SQLITE_DB
-      - PINECONE_INDEX
+      - 'SQLITE_DB=/usr/src/data/sqlite.db'
       - OPENAI_API_KEY
       - OPENAI_API_ORG
       - PINECONE_API_KEY
       - PINECONE_ENVIRONMENT
       - PICOVOICE_ACCESS_KEY
+      - PINECONE_INDEX
       - SERPAPI_API_KEY
-      - SERPER_API_KEY
       - GOOGLE_API_KEY
-      - GOOGLE_CSE_ID
-      - WOLFRAM_ALPHA_APPID
-      - RESEMBLE_API_KEY
     depends_on:
       - mimic3

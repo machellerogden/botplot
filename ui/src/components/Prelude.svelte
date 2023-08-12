@@ -81,7 +81,7 @@
             {#if ['user','function'].includes(message.role) && message.name}
                 <div class="text-gray-700">{message.name}</div>
             {/if}
-            <div class="text-gray font-mono whitespace-pre-wrap mb-2">{message.content}</div>
+            <div class="text-gray-900 font-mono whitespace-pre-wrap mb-2">{message.content}</div>
         </div>
     </div>
 {/each}

@@ -1,6 +1,6 @@
 import { log } from './stores.js';
 
-const baseUrl = 'http://localhost:8889';  // TODO: get hard-coded port out of here
+const baseUrl = __BASEURL__;
 
 const resources = {
     bot: `${baseUrl}/v1/bot`,
