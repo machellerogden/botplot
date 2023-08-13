@@ -24,7 +24,9 @@ const resources = {
     functionLookup: `${baseUrl}/v1/function-lookup`,
     functionLookups: `${baseUrl}/v1/function-lookups`,
     functions: `${baseUrl}/v1/functions`,
+    synth: `${baseUrl}/v1/synth`,
     googleSynth: `${baseUrl}/v1/ss-synth/google`,
+    elevenSynth: `${baseUrl}/v1/ss-synth/eleven`,
     message: `${baseUrl}/v1/message`,
     messages: `${baseUrl}/v1/messages`,
     mimicSynth: `${baseUrl}/v1/ss-synth/mimic`,
@@ -45,6 +47,26 @@ export async function transcribe(blob) {
     const data = await response.json();
     console.log('transcript', data.transcript);
     console.log('file', data.file);
+    return data;
+}
+
+export async function getSynthAudio(provider, { content, ssml, voice }) {
+    if (!content?.length) return;
+    const request = {
+        content,
+        ssml,
+        voice
+    };
+    const body = JSON.stringify(request);
+    const response = await window.fetch(`${resources.synth}/${provider}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body
+    });
+    const data = await response.json();
+    console.log('synth response', data);
     return data;
 }
 
@@ -84,6 +106,25 @@ export async function mimicSynth({ content, ssml, voice }) {
         body
     });
     console.log('mimicSynth response', response);
+    return response;
+}
+
+export async function elevenSynth({ content, ssml, voice }) {
+    if (!content?.length) return;
+    const request = {
+        content,
+        ssml
+    };
+    if (voice) request.voice = voice;
+    const body = JSON.stringify(request);
+    const response = await window.fetch(resources.elevenSynth, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body
+    });
+    console.log('elevenSynth response', response);
     return response;
 }
 

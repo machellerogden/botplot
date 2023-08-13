@@ -4,3 +4,6 @@ public/*
 !public/.gitkeep
 tmp
 output.wav
+terraform
+fly.toml
+litefs.yml

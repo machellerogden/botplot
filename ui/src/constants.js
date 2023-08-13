@@ -125,3 +125,18 @@ export const googleVoices = [
         key: 'en-US/en-US-Neural2-A/MALE'
     }
 ];
+
+export const elevenVoices = [
+    {
+        alias: 'Samantha',
+        key: 'J6eke8tT5Kdd5aj78EL7'
+    },
+    {
+        alias: 'Tom',
+        key: 'ec46ozMJSj85SYCvY1jb'
+    },
+    {
+        alias: 'Joanne',
+        key: 'nlJhUZySt38JRvrfLx27'
+    }
+];

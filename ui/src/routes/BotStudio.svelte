@@ -9,6 +9,7 @@
     } from '../stores.js';
 
     import {
+        elevenSynth,
         getBot,
         getBotChat,
         getBotMessages,
@@ -21,9 +22,9 @@
         insertMessage,
         mimicSynth,
         newBotChat,
+        newWorkspace,
         patchBot,
         patchBotChat,
-        newWorkspace,
         patchWorkspace,
         postChatCompletion,
         postCompletionConfig,
@@ -33,7 +34,7 @@
     } from '../api.js';
 
     import { createHashSource } from '../lib/hashHistory.js';
-    import { mimicVoices, googleVoices } from '../constants.js';
+    import { mimicVoices, googleVoices, elevenVoices } from '../constants.js';
 
     import DefaultLayout from '../layout/DefaultLayout.svelte';
     import MainNav from '../layout/MainNav.svelte';
@@ -60,8 +61,6 @@
     export let project_id = 'default';
     export let workspace_id = 'default';
     export let chat_id = 'default';
-
-    export let workspace_location_ref = `/Users/mac/Library/Mobile Documents/com~apple~CloudDocs/botplot/tmp`;
 
     let project = {};
     let workspace = {};
@@ -367,6 +366,8 @@
                 mimicSynth(synthRequest);
             } else if (voice_provider == 'google') {
                 googleSynth(synthRequest);
+            } else if (voice_provider == 'eleven') {
+                elevenSynth(synthRequest);
             }
         }
     }
@@ -493,6 +494,8 @@
             mimicSynth(synthRequest);
         } else if (voice_provider == 'google') {
             googleSynth(synthRequest);
+        } else if (voice_provider == 'eleven') {
+            elevenSynth(synthRequest);
         }
     }
 
@@ -947,7 +950,7 @@
                                     class="outline-0 rounded-lg border border-gray bg-gray-200 font-mono p-1 text-xxs mt-1 mb-2 w-fit"
                                     bind:value={voice_provider}
                                 >
-                                    {#each ['mimic','google'] as option (option)}
+                                    {#each ['mimic','google','eleven'] as option (option)}
                                         <option value="{option}" selected={option == (voice_provider ?? bot.voice_provider)}>{option}</option>
                                     {/each}
                                 </select>
@@ -988,6 +991,26 @@
                                         bind:value={voice_key}
                                     >
                                         {#each googleVoices as {alias, key} (key)}
+                                            <option value="{key}" selected={voice_key == key}>{alias}</option>
+                                        {/each}
+                                    </select>
+
+                                {:else if voice_provider == 'eleven'}
+
+                                    <label
+                                        for="voice_key"
+                                        class="truncate text-gray-400"
+                                    >
+                                        voice_key
+                                    </label>
+                                    <select
+                                        on:change={async event => {
+                                            await patchBot(bot.id, { voice_key: event.target.value });
+                                        }}
+                                        class="outline-0 rounded-lg border border-gray bg-gray-200 font-mono p-1 text-xxs w-fit"
+                                        bind:value={voice_key}
+                                    >
+                                        {#each elevenVoices as {alias, key} (key)}
                                             <option value="{key}" selected={voice_key == key}>{alias}</option>
                                         {/each}
                                     </select>
