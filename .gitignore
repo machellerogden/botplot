@@ -7,3 +7,4 @@ output.wav
 terraform
 fly.toml
 litefs.yml
+output.mp3
