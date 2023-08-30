@@ -31,7 +31,7 @@ docker-down:
 	${OP}docker compose down
 
 docker-mimic:
-	${OP} docker compose up -d mimic3
+	${OP}docker compose up -d mimic3
 
 db-init:
 	${OP}./scripts/db-init

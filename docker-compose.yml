@@ -14,7 +14,8 @@ services:
       context: .
       args:
         - 'BASEURL=http://localhost:8889'
-        - PICOVOICE_ACCESS_KEY # todo, done to this
+        - PICOVOICE_ACCESS_KEY # todo: don't do this
+    platform: linux/x86_64 # because no prebuilt linux/arm64 sqlite-vss binaries and dont want to build into the image, yet.
     ports:
       - '${PORT}:8889'
     volumes:

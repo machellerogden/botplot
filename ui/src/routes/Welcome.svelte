@@ -2,8 +2,7 @@
     import Frameless from '../layout/Frameless.svelte';
     import { Link } from 'svelte-navigator';
 
-    console.log('here')
-
+    export let user;
 </script>
 
 <Frameless>

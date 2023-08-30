@@ -1,4 +1,4 @@
-FROM node:18 as base
+FROM --platform=linux/x86_64 node:18 as base
 WORKDIR /usr/src/app
 RUN apt update && apt install -y apt-transport-https ca-certificates sqlite3
 
@@ -9,6 +9,7 @@ COPY ./package*.json ./
 COPY ./ui/package*.json ./ui/
 RUN npm install
 RUN npm rebuild better-sqlite3 --build-from-source
+RUN npm install sqlite-vss-linux-x64
 COPY . .
 RUN npm run build
 
