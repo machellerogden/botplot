@@ -185,7 +185,7 @@ insert or ignore into bot_chats (
     'default', 'default', 'default', 'default', 'default'
 );
 
-insert or ignore into functions (name, description, parameters)
+insert or ignore into functions (id, name, description, parameters)
 values
     ('vkxcK-lEsXPq-a-Dm5AZI', 'set_chat_label',      'Set the label of the current chat',             '{"type":"object","properties":{"label":{"type":"string","description":"A clever descriptive label of the current chat, e.g. Mysterious Penguin Story"}},"required":["label"]}'),
     ('hCTmB3tw6y3h9_SBBqaC3', 'set_timer',           'Sets a timer with given minutes',               '{"type":"object","properties":{"minutes":{"type":"number","description":"number of minutes to set on timer"}},"required":["minutes"]}'),
